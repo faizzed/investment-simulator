@@ -1,6 +1,7 @@
 package market
 
 import java.time.LocalDate
+import java.time.Period
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -33,4 +34,11 @@ fun subtractMonthsFromCurrentDate(months: Int): String {
 
 fun dateToString(cal: Calendar): String {
     return "${cal.get(Calendar.DAY_OF_MONTH)}-${cal.get(Calendar.MONTH)+1}-${cal.get(Calendar.YEAR)}"
+}
+
+fun differenceInYears(from: String, to: String): Int {
+    return Period.between(
+        LocalDate.parse(from.split("-").joinToString(""), DateTimeFormatter.ofPattern("ddMMyyyy")),
+        LocalDate.parse(to.split("-").joinToString(""), DateTimeFormatter.ofPattern("ddMMyyyy"))
+    ).years
 }

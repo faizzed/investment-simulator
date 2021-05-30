@@ -2,12 +2,11 @@ package market
 
 /**
  * S&P 500 from 2010 to 2019, the average stock market return for the last 10 years is 11.805%
- * This can be different for other indexes. We can make a dictionary of returns and see how others compare to it.
- *
  * Given a static amount or added over the years we can see how it will look like after x years.
  *
+ * This is static and it run over a static return each month.
  * */
-class InvestmentCalculator(val initial: Double, val returnPercentage: Double, val years: Int) {
+class InvestmentCalculatorStaticAnalysis(val initial: Double, val returnPercentage: Double, val years: Int) {
 
     /*
     * One time investment and if the return wasn't reinvested

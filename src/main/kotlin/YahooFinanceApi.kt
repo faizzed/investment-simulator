@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import java.io.File
 import kotlin.math.abs
 
-data class Meta(val currency: String, val symbol: String, val exchangeName: String)
+data class Meta(val currency: String, val symbol: String, val exchangeName: String, val instrumentType: String)
 data class AdjClose(val adjclose: Array<Double>)
 data class Indicators(val quote: Array<Any>, val adjclose: Array<AdjClose>)
 data class Result(val meta: Meta, val timestamp: Array<Long>, val indicators: Indicators)
@@ -22,11 +22,11 @@ class YahooFinanceApi(val ticker: String, val startDate: Long, val endDate: Long
         val fileName = "./src/main/resources/$ticker-$startDate-$endDate-$interval.json"
 
         if(File(fileName).exists()) {
-            println("Using local file system..")
+            println("[YAHOO API]: Using local file system.")
             return Gson().fromJson(File(fileName).bufferedReader(), YahooResponse::class.java)
         }
 
-        println("Sending request to yahoo finance api..")
+        println("[YAHOO API: Sending request to yahoo finance api.")
         val url = "https://query1.finance.yahoo.com/v8/finance/chart/$ticker?formatted=true&includeAdjustedClose=true&interval=$interval&period1=$startDate&period2=$endDate"
         val (request, response, result) = url
             .httpGet()
@@ -46,7 +46,7 @@ class YahooFinanceApi(val ticker: String, val startDate: Long, val endDate: Long
 
     }
 
-    fun getMonthlyReturnsOverLastFiveYears(): MutableMap<String, Double> {
+    fun getMonthlyReturns(): MutableMap<String, Double> {
         val report = pullReport() as YahooResponse
         val monthlyReturnsMap = mutableMapOf<String, Double>()
         val timeStampsArr = report.chart.result.first().timestamp
@@ -62,6 +62,7 @@ class YahooFinanceApi(val ticker: String, val startDate: Long, val endDate: Long
             val currentMonth = adCloseArr[i]
             val percentageIncrease = if (lastMonth == 0.0) 0.0 else ((currentMonth - lastMonth) / abs(lastMonth)) * 100
             monthlyReturnsMap[timeStampToDate(timeStampsArr[i])] = percentageIncrease
+//            print("current Month: $currentMonth - lastMonth: $lastMonth data: ${timeStampToDate(timeStampsArr[i])}\n")
         }
         return monthlyReturnsMap
     }
